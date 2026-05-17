@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Type Fighter</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="game-shell">
+    <canvas id="arena" width="1280" height="720" aria-label="Type Fighter arena"></canvas>
+
+    <section class="hud" aria-label="game status">
+      <div class="fighter-strip">
+        <div class="corner player">
+          <span>YOU</span>
+          <div class="bar"><i id="playerHp"></i></div>
+        </div>
+        <div class="round">
+          <strong id="roundTime">120</strong>
+          <small id="comboText">COMBO 0</small>
+          <small id="difficultyText">LV 1</small>
+        </div>
+        <div class="corner opponent">
+          <span>RIVAL</span>
+          <div class="bar"><i id="enemyHp"></i></div>
+        </div>
+      </div>
+
+      <aside class="settings-panel" aria-label="settings">
+        <button id="settingsToggle" class="settings-toggle" type="button">SETTINGS</button>
+        <div id="settingsBody" class="settings-body">
+          <div class="settings-group profile-group">
+            <span>マイページ</span>
+            <input id="profileNameInput" type="text" maxlength="18" placeholder="名前">
+            <div class="profile-actions">
+              <button id="createProfileButton" type="button">作成</button>
+              <button id="loginProfileButton" type="button">ログイン</button>
+            </div>
+            <small id="profileStatus">未ログイン</small>
+          </div>
+          <label>
+            <span>LEVEL</span>
+            <select id="levelSelect" aria-label="level select"></select>
+          </label>
+          <label class="check-row">
+            <input id="symbolsToggle" type="checkbox">
+            <span>記号を含める</span>
+          </label>
+          <label class="range-row">
+            <span>音量 <b id="volumeValue">70%</b></span>
+            <input id="volumeSlider" type="range" min="0" max="100" value="70">
+          </label>
+          <label class="range-row">
+            <span>プログラム問題 <b id="codeFreqValue">28%</b></span>
+            <input id="codeFreqSlider" type="range" min="0" max="100" value="28">
+          </label>
+          <div class="settings-group">
+            <span>キー表示</span>
+            <div class="mini-segment">
+              <button id="hintAbove" class="active" type="button">上</button>
+              <button id="hintDirect" type="button">重ねる</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="prompt-zone">
+        <div id="keyboardPanel" class="keyboard-panel visible" aria-label="keyboard position helper">
+          <div class="keyboard-title">
+            <span id="mistakeCopy">LAST</span>
+            <b id="keyHint">-</b>
+          </div>
+          <div id="keyboard" class="keyboard"></div>
+        </div>
+        <div class="phrase-card">
+          <div id="mistakeBubble" class="mistake-bubble" aria-live="polite"></div>
+          <div id="displayPhrase" class="display-phrase"></div>
+          <div id="phrase" class="phrase"></div>
+          <div id="typingLine" class="typing-line"></div>
+        </div>
+        <div id="feedback" class="feedback">SPACEで開始</div>
+      </div>
+    </section>
+
+    <div id="startOverlay" class="overlay">
+      <div class="start-panel">
+        <p class="kicker">FIRST PERSON TYPING BOXING</p>
+        <h1>TYPE FIGHTER</h1>
+        <p>タイピングボクシング。設定は右上からいつでも変えられます。</p>
+        <button id="startButton" type="button">FIGHT</button>
+      </div>
+    </div>
+
+    <div id="resultOverlay" class="overlay hidden">
+      <div class="start-panel">
+        <p class="kicker" id="resultKicker">RESULT</p>
+        <h1 id="resultTitle">KO</h1>
+        <p id="resultStats"></p>
+        <button id="restartButton" type="button">REMATCH</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="./game.js"></script>
+</body>
+</html>
