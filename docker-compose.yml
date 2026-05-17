@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16
-    container_name: typinng-game-db
+    container_name: typing-game-db
     environment:
       POSTGRES_DB: typing_game
       POSTGRES_USER: postgres
