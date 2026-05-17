@@ -1,7 +1,7 @@
 services:
   app:
     build: ./backend
-    cntainer_name: typing-game-app
+    container_name: typing-game-app
     ports:
       - "8080:8080"
     depends_on:
