@@ -393,6 +393,7 @@
     hintDirectButton.classList.toggle("active", state.hintMode === 1);
     hintAboveButton.classList.toggle("active", state.hintMode === 0);
     saveCurrentProfile();
+  queueMyPageUpdate();
   }
 
   function setLevel(level) {
@@ -414,6 +415,7 @@
     if (symbolsToggle) symbolsToggle.checked = enabled;
     clearLastKeys();
     saveCurrentProfile();
+    queueMyPageUpdate();
   }
 
   function setVolume(value) {
@@ -421,6 +423,7 @@
     volumeSlider.value = String(Math.round(state.volume * 100));
     volumeValue.textContent = `${Math.round(state.volume * 100)}%`;
     saveCurrentProfile();
+    queueMyPageUpdate();
   }
 
   function setCodeFrequency(value) {
@@ -428,6 +431,7 @@
     codeFreqSlider.value = String(Math.round(state.codeFrequency * 100));
     codeFreqValue.textContent = `${Math.round(state.codeFrequency * 100)}%`;
     saveCurrentProfile();
+    queueMyPageUpdate();
   }
 
   function profileKey(name) {
@@ -971,6 +975,7 @@
       state.maxUnlockedLevel = Math.max(state.maxUnlockedLevel, state.level + 1);
       updateLevelLocks();
       saveCurrentProfile();
+      queueMyPageUpdate();
     }
     resultKicker.textContent = reason === "time" ? "TIME UP" : "RESULT";
     resultTitle.textContent = win ? "LEVEL CLEAR" : "DOWN";
@@ -1387,7 +1392,7 @@
   async function saveMyPage(){
     const name = profileNameInput.value.trim();
     if (name === "") return;
-    const response = await fetch("http://localhost:8080/api/mypages",{
+    const response = await fetch("/api/mypages",{
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -1411,12 +1416,39 @@
     profileStatus.textContent = `${name} を保存しました`;
   }
 
+  async function updateMyPage(){
+    const name = profileNameInput.value.trim();
+    if (name === "") return;
+    const response = await fetch("/api/mypages",{
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name,
+            level: state.maxUnlockedLevel,
+            soundVolume: Math.round(state.volume * 100),
+            programProblemRate: Math.round(state.codeFrequency * 100),
+            keyDisplayMode: state.hintMode
+        })
+    });
+
+    if(!response.ok){    
+        profileStatus.textContent = `${name} は作成されていません`;
+        return;
+    }
+
+    const data = await response.json();
+    console.log("updated", data);
+    profileStatus.textContent = `${name} を更新しました`;
+  }
+
   async function loadMyPage(){
     const name = profileNameInput.value.trim();
     if (name === "") return null;
     console.log("LOAD NAME =", name);
 
-    const response = await fetch(`http://localhost:8080/api/mypages/${encodeURIComponent(name)}`);
+    const response = await fetch(`/api/mypages/${encodeURIComponent(name)}`);
     if(!response.ok){
         console.log("user not found");
         profileStatus.textContent = `${name} は未登録です`;
@@ -1426,13 +1458,27 @@
     const mypage = await response.json();
     profileNameInput.value = mypage.name;
     state.currentProfile = mypage.name;
-    state.maxUnlockedLevel = mypage.level;
+    state.maxUnlockedLevel = Math.max(1, Math.min(100, Number(mypage.level) || 1));
     updateLevelLocks();
+    setLevel(state.maxUnlockedLevel);
+    applyingProfile = true;
     setVolume(mypage.soundVolume);
     setCodeFrequency(mypage.programProblemRate);
     setHintMode(mypage.keyDisplayMode);
+    applyingProfile = false;
 
     profileStatus.textContent = `${name} をロードしました`;
+  }
+
+  let applyingProfile = false;
+  let updateTimer = null;
+  function queueMyPageUpdate() {
+    if (!state.currentProfile || applyingProfile) return;
+
+    clearTimeout(updateTimer);
+    updateTimer = setTimeout(() => {
+      updateMyPage();
+    }, 300);
   }
 
 
