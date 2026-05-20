@@ -2,8 +2,8 @@ name: Deploy to EC2
 
 on:
   push:
-    blanches:
-      -main
+    branches:
+      - main
 
 jobs:
   deploy:
