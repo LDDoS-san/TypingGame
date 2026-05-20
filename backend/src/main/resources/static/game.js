@@ -1419,7 +1419,7 @@
   async function updateMyPage(){
     const name = profileNameInput.value.trim();
     if (name === "") return;
-    const response = await fetch("/api/mypages",{
+    const response = await fetch(`/api/mypages/${encodeURIComponent(name)}`,{
         method: "PUT",
         headers: {
             "Content-Type": "application/json"

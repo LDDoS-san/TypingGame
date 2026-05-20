@@ -32,8 +32,8 @@ public class MyPageController{
             .map(existing -> {
                 existing.setLevel(mypage.getLevel());
                 existing.setSoundVolume(mypage.getSoundVolume());
-                existing.setProgramProblemRate(mypage.programProblemRate());
-                existing.setKeyDisplayMode(mypage.setKeyDisplayMode());
+                existing.setProgramProblemRate(mypage.getProgramProblemRate());
+                existing.setKeyDisplayMode(mypage.getKeyDisplayMode());
                 return ResponseEntity.ok(mypageRepository.save(existing));
             })
             .orElse(ResponseEntity.notFound().build());
