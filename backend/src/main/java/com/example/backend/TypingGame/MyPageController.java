@@ -1,6 +1,7 @@
 package com.example.backend.typinggame;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
